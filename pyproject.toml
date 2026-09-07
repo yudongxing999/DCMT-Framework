@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dcmt-framework"
+version = "0.1.0"
+description = "Dynamic Cross-Modal Tokenization (DCMT) Framework"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+    { name = "Dongxing Yu", email = "yudongxing@sandau.edu.cn" }
+]
+dependencies = [
+    "torch",
+    "numpy",
+    "scipy",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+include = ["dcmt*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
