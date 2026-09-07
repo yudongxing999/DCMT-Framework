@@ -1,0 +1,31 @@
+Measure,Formula,Purpose,Interpretation,Value_in_Paper,Context
+Cohen's d,"(M1 - M2) / SD_pooled",Effect size for comparing two group means,"0.2 = small, 0.5 = medium, 0.8 = large",0.82,VQA improvement effect size
+Cohen's d,"(M1 - M2) / SD_pooled",Effect size for comparing two group means,"0.2 = small, 0.5 = medium, 0.8 = large",0.65,Complex Scene effect size
+Cohen's d,"(M1 - M2) / SD_pooled",Effect size for comparing two group means,"0.2 = small, 0.5 = medium, 0.8 = large",0.71,Cross-modal Retrieval effect size
+Cohen's d,"(M1 - M2) / SD_pooled",Effect size for comparing two group means,"0.2 = small, 0.5 = medium, 0.8 = large",0.78,Visual Reasoning effect size
+Fleiss' κ,"(P_o - P_e) / (1 - P_e)",Inter-rater agreement for multiple annotators,">0.75 = excellent, 0.40-0.75 = fair to good",0.78,CMCE annotation agreement
+Pearson's r,"Σ(x-x̄)(y-ȳ) / √[Σ(x-x̄)²Σ(y-ȳ)²]",Linear correlation strength,"±0.1 = weak, ±0.3 = moderate, ±0.5 = strong",0.68,DCMT attention-human gaze correlation
+Pearson's r,"Σ(x-x̄)(y-ȳ) / √[Σ(x-x̄)²Σ(y-ȳ)²]",Linear correlation strength,"±0.1 = weak, ±0.3 = moderate, ±0.5 = strong",0.41,Baseline attention-human gaze correlation
+Pearson's r,"Σ(x-x̄)(y-ȳ) / √[Σ(x-x̄)²Σ(y-ȳ)²]",Linear correlation strength,"±0.1 = weak, ±0.3 = moderate, ±0.5 = strong",0.64,Connectivity-performance correlation
+Pearson's r,"Σ(x-x̄)(y-ȳ) / √[Σ(x-x̄)²Σ(y-ȳ)²]",Linear correlation strength,"±0.1 = weak, ±0.3 = moderate, ±0.5 = strong",0.72,Semantic coherence-chunk size correlation
+Pearson's r,"Σ(x-x̄)(y-ȳ) / √[Σ(x-x̄)²Σ(y-ȳ)²]",Linear correlation strength,"±0.1 = weak, ±0.3 = moderate, ±0.5 = strong",0.68,Task complexity-chunk size correlation
+Bonferroni correction,"α_adjusted = α / n_comparisons",Adjustment for multiple comparisons,Controls family-wise error rate at α,0.05/4=0.0125,Multiple benchmark comparisons
+KL divergence,"Σ P(x) log(P(x)/Q(x))",Distribution similarity measure,"0 = identical, higher = more different",0.31,DCMT error distribution from human
+KL divergence,"Σ P(x) log(P(x)/Q(x))",Distribution similarity measure,"0 = identical, higher = more different",0.79,Baseline error distribution from human
+t-statistic,"(M1 - M2) / SE",Test statistic for mean comparison,|t| > critical value indicates significance,18.4,Chunk boundary fixation duration
+t-statistic,"(M1 - M2) / SE",Test statistic for mean comparison,|t| > critical value indicates significance,14.32,Cross-modal transition frequency
+t-statistic,"(M1 - M2) / SE",Test statistic for mean comparison,|t| > critical value indicates significance,11.3,Contextual modulation index
+F-statistic,"Variance_between / Variance_within",Test for variance equality,F > critical value indicates difference,31.8,Boundary variance comparison
+Mean (M),Σx / n,Central tendency measure,Average value of observations,342,Fixation duration at boundaries (ms)
+Mean (M),Σx / n,Central tendency measure,Average value of observations,217,Fixation duration within-chunk (ms)
+Mean (M),Σx / n,Central tendency measure,Average value of observations,267,Cross-modal shift latency (ms)
+Mean (M),Σx / n,Central tendency measure,Average value of observations,4.8,Working memory chunk capacity
+Standard Deviation (SD),"√[Σ(x-x̄)² / (n-1)]",Measure of dispersion,Spread of observations around mean,58,Boundary fixation duration SD
+Standard Deviation (SD),"√[Σ(x-x̄)² / (n-1)]",Measure of dispersion,Spread of observations around mean,42,Within-chunk fixation duration SD
+Standard Deviation (SD),"√[Σ(x-x̄)² / (n-1)]",Measure of dispersion,Spread of observations around mean,0.7,Working memory capacity SD
+Mutual Information (MI),"Σ P(x,y) log(P(x,y) / P(x)P(y))",Shared information between variables,Higher = more shared information (bits),2.14,Human neural MI (early processing)
+Mutual Information (MI),"Σ P(x,y) log(P(x,y) / P(x)P(y))",Shared information between variables,Higher = more shared information (bits),0.68,Baseline model MI
+Mutual Information (MI),"Σ P(x,y) log(P(x,y) / P(x)P(y))",Shared information between variables,Higher = more shared information (bits),1.72,DCMT model MI
+Contextual Modulation Index,Variance of representations across contexts,Measure of context sensitivity,Higher = more context-sensitive,0.43,DCMT contextual modulation
+Contextual Modulation Index,Variance of representations across contexts,Measure of context sensitivity,Higher = more context-sensitive,0.12,Baseline contextual modulation
+Entropy,"-Σ P(x) log P(x)",Measure of uncertainty/variability,Higher = more variable,0.43,Human boundary entropy (43% more than models)

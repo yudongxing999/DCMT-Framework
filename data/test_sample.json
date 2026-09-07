@@ -1,0 +1,86 @@
+[
+  {
+    "id": "cmce_00001",
+    "image_path": "images/00001.jpg",
+    "text": "A red car is parked next to the tall building",
+    "visual_chunks": [
+      {"id": 0, "bbox": [10, 20, 150, 200], "label": "car", "attributes": ["red", "parked"]},
+      {"id": 1, "bbox": [160, 30, 300, 250], "label": "building", "attributes": ["tall"]}
+    ],
+    "text_chunks": [
+      {"id": 0, "start": 0, "end": 10, "text": "A red car"},
+      {"id": 1, "start": 11, "end": 20, "text": "is parked"},
+      {"id": 2, "start": 21, "end": 46, "text": "next to the tall building"}
+    ],
+    "alignments": [
+      {"visual_chunk": 0, "text_chunk": 0, "confidence": 0.95},
+      {"visual_chunk": 0, "text_chunk": 1, "confidence": 0.72},
+      {"visual_chunk": 1, "text_chunk": 2, "confidence": 0.88}
+    ],
+    "metadata": {
+      "complexity": 3,
+      "num_objects": 2,
+      "text_length": 46,
+      "annotator_agreement": 0.83,
+      "source": "public_domain"
+    }
+  },
+  {
+    "id": "cmce_00002",
+    "image_path": "images/00002.jpg",
+    "text": "The woman in blue dress is walking her golden retriever in the park",
+    "visual_chunks": [
+      {"id": 0, "bbox": [50, 40, 120, 220], "label": "woman", "attributes": ["blue dress", "walking"]},
+      {"id": 1, "bbox": [130, 150, 200, 230], "label": "dog", "attributes": ["golden retriever"]},
+      {"id": 2, "bbox": [0, 180, 320, 280], "label": "park", "attributes": ["green", "outdoor"]}
+    ],
+    "text_chunks": [
+      {"id": 0, "start": 0, "end": 24, "text": "The woman in blue dress"},
+      {"id": 1, "start": 25, "end": 35, "text": "is walking"},
+      {"id": 2, "start": 36, "end": 56, "text": "her golden retriever"},
+      {"id": 3, "start": 57, "end": 68, "text": "in the park"}
+    ],
+    "alignments": [
+      {"visual_chunk": 0, "text_chunk": 0, "confidence": 0.92},
+      {"visual_chunk": 0, "text_chunk": 1, "confidence": 0.78},
+      {"visual_chunk": 1, "text_chunk": 2, "confidence": 0.96},
+      {"visual_chunk": 2, "text_chunk": 3, "confidence": 0.85}
+    ],
+    "metadata": {
+      "complexity": 5,
+      "num_objects": 3,
+      "text_length": 68,
+      "annotator_agreement": 0.79,
+      "source": "academic_repository"
+    }
+  },
+  {
+    "id": "cmce_00003",
+    "image_path": "images/00003.jpg",
+    "text": "Children playing soccer on the green field under sunny sky",
+    "visual_chunks": [
+      {"id": 0, "bbox": [30, 60, 180, 200], "label": "children", "attributes": ["playing", "group"]},
+      {"id": 1, "bbox": [100, 170, 130, 195], "label": "soccer_ball", "attributes": []},
+      {"id": 2, "bbox": [0, 150, 320, 280], "label": "field", "attributes": ["green"]},
+      {"id": 3, "bbox": [0, 0, 320, 80], "label": "sky", "attributes": ["sunny", "blue"]}
+    ],
+    "text_chunks": [
+      {"id": 0, "start": 0, "end": 23, "text": "Children playing soccer"},
+      {"id": 1, "start": 24, "end": 44, "text": "on the green field"},
+      {"id": 2, "start": 45, "end": 60, "text": "under sunny sky"}
+    ],
+    "alignments": [
+      {"visual_chunk": 0, "text_chunk": 0, "confidence": 0.94},
+      {"visual_chunk": 1, "text_chunk": 0, "confidence": 0.88},
+      {"visual_chunk": 2, "text_chunk": 1, "confidence": 0.91},
+      {"visual_chunk": 3, "text_chunk": 2, "confidence": 0.89}
+    ],
+    "metadata": {
+      "complexity": 6,
+      "num_objects": 4,
+      "text_length": 60,
+      "annotator_agreement": 0.81,
+      "source": "public_domain"
+    }
+  }
+]
