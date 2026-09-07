@@ -45,6 +45,11 @@ pyproject.toml
 README.md
 tests/test_forward_smoke.py
 data/test_sample.json
+data/synthetic_train.json
+data/synthetic_val.json
+scripts/make_synthetic_cmce.py
+scripts/train_tiny.py
+results/tiny_baseline/metrics.json
 ```
 
 ## Usage
@@ -96,6 +101,29 @@ Prefer the tiny config in the smoke test / `--tiny` flag for reviewers.
 4. `MutualInformationEstimator` log tensors use the same device/dtype as inputs.
 5. `key_padding_mask = (mask == 0)` when `mask` is a validity mask (`1=keep`).
 6. `evaluate.py` imports `dcmt.model`, loads `data/test_sample.json` inline, and indexes alignment as `[N_v, N_t]`.
+
+## Tiny training baseline
+
+CPU-friendly synthetic CMCE training to verify the full train→eval loop.
+
+```bash
+# from repo root (after pip install -e . or with PYTHONPATH=.)
+python scripts/make_synthetic_cmce.py
+python scripts/train_tiny.py --epochs 5 --device cpu --seed 42
+```
+
+This writes:
+- `data/synthetic_train.json` / `data/synthetic_val.json` (200 / 40 samples)
+- `results/tiny_baseline/model.pt` (tiny checkpoint via `save_pretrained`)
+- `results/tiny_baseline/metrics.json` (loss curve + CMCE metrics)
+
+**Metrics** (from `CMCEEvaluator` in `evaluate.py`):
+- `chunk_f1` — F1 of predicted text token boundaries vs GT chunk starts (tolerance ±2 tokens)
+- `alignment_acc` — fraction of GT visual↔text chunk pairs whose mapped token-alignment score exceeds 0.5
+- `cmce_score` — `0.4 * chunk_f1 + 0.6 * alignment_acc`
+
+Tiny config: `d_model=64`, 1 layer, `img_size=64`, `vocab_size=1000`, `max_seq_length=64`, `num_labels=10`.
+Loss: `CE(labels) + 0.1 * align_loss + 0.5 * BoundaryLoss`.
 
 ## License
 
