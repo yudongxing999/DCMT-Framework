@@ -26,7 +26,7 @@ pip install -e .
 pip install -e .
 ```
 
-Requirements: `torch`, `numpy`, `scipy`, `tqdm`.
+Requirements: `torch`, `numpy`, `scipy`, `tqdm`, `Pillow`, `torchvision` (image load).
 
 ## Package layout
 
@@ -48,8 +48,11 @@ data/test_sample.json
 data/synthetic_train.json
 data/synthetic_val.json
 scripts/make_synthetic_cmce.py
+scripts/prepare_real_cmce.py
 scripts/train_tiny.py
+data/README_synthetic.md
 results/tiny_baseline/metrics.json
+results/tiny_align_v2/metrics.json
 ```
 
 ## Usage
@@ -148,7 +151,46 @@ Synthetic JSON includes `alignment_token_pairs: [{"v": int, "t": int}, ...]`
 (`v` skips CLS=0; `t` is text chunk start token). Regenerate with
 `scripts/make_synthetic_cmce.py` if files are missing.
 
+
+### Harder synthetic (`tiny_hard_v1`)
+
+```bash
+python scripts/make_synthetic_cmce.py --seed 42 --difficulty hard --n-train 300 --n-val 60
+python scripts/train_tiny.py --epochs 8 --device cpu --seed 42 \
+  --train-data data/synthetic_hard_train.json \
+  --val-data data/synthetic_hard_val.json \
+  --out results/tiny_hard_v1
+```
+
+Hard mode adds longer multi-chunk texts, confusable object names, irregular
+visual strides, boundary noise, and distractor alignments (annotation-only).
+Expect **lower** `alignment_acc` / `cmce_score` than easy `tiny_align_v2`
+(alignment_acc≈0.817, cmce≈0.890) — that is intentional.
+
+See `data/README_synthetic.md`.
+
+## Real image-text pipeline (tiny / smoke)
+
+```bash
+pip install -r requirements.txt   # includes Pillow, torchvision
+python scripts/prepare_real_cmce.py --n-total 80 --seed 42
+python scripts/train_tiny.py --epochs 5 --device cpu --seed 42 \
+  --train-data data/real/train.json --val-data data/real/val.json \
+  --out results/tiny_real_v1
+```
+
+Offline fallback if downloads fail:
+
+```bash
+python scripts/prepare_real_cmce.py --from-dir /path/to/images --n-total 60
+```
+
+**Caveats:** visual alignments are **pseudo** (patch indices spaced across the
+image; no object detectors). Image binaries under `data/real/images/` are
+re-downloaded by the script and generally not committed. See `data/real/README.md`.
+
 ## License
+
 
 MIT — see `LICENSE`.
 
