@@ -49,11 +49,14 @@ def apply_boundary_noise(targets: List[int], n_tokens: int, rng: random.Random) 
     return out
 
 def visual_token_index(vid: int, n_visual: int, num_patches: int, rng: Optional[random.Random]=None, hard: bool=False) -> int:
+    # Hard: mild LTR column jitter so primary pairs stay learnable; distractors stay in alignments only.
     if hard and rng is not None:
         base = max(1, num_patches // max(n_visual, 1))
-        stride = max(1, base + rng.randint(-1, 2))
-        offset = rng.randint(0, max(1, base // 2 + 1))
-        v = ((offset + vid * stride) % num_patches) + 1
+        stride = max(1, base + rng.randint(0, 1))
+        offset = rng.randint(0, max(0, base // 3))
+        v = 1 + offset + vid * stride
+        if v > num_patches:
+            v = ((v - 1) % num_patches) + 1
         return int(min(max(v, 1), num_patches))
     stride = max(1, num_patches // max(n_visual, 1))
     return int(min(max(1 + vid * stride, 1), num_patches))
