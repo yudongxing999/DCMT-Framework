@@ -108,3 +108,7 @@ temp/
 # Secrets
 secrets.yaml
 config_local.yaml
+
+# Bulky regenerated synthetic hard splits (regen via make_synthetic_cmce.py)
+data/synthetic_hard_train.json
+data/synthetic_hard_val.json
