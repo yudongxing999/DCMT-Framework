@@ -108,7 +108,7 @@ CPU-friendly synthetic CMCE training to verify the full train→eval loop.
 
 ```bash
 # from repo root (after pip install -e . or with PYTHONPATH=.)
-python scripts/make_synthetic_cmce.py
+python scripts/make_synthetic_cmce.py --seed 42
 python scripts/train_tiny.py --epochs 5 --device cpu --seed 42
 ```
 
@@ -119,11 +119,34 @@ This writes:
 
 **Metrics** (from `CMCEEvaluator` in `evaluate.py`):
 - `chunk_f1` — F1 of predicted text token boundaries vs GT chunk starts (tolerance ±2 tokens)
-- `alignment_acc` — fraction of GT visual↔text chunk pairs whose mapped token-alignment score exceeds 0.5
+- `threshold_acc` — fraction of GT token pairs with score > 0.5
+- `argmax_acc` — fraction where `argmax` over text dim for visual token `v` equals GT `t`
+- `alignment_acc` — **primary** = `argmax_acc` (prefer over threshold; cosine scale is poorly calibrated)
 - `cmce_score` — `0.4 * chunk_f1 + 0.6 * alignment_acc`
 
 Tiny config: `d_model=64`, 1 layer, `img_size=64`, `vocab_size=1000`, `max_seq_length=64`, `num_labels=10`.
-Loss: `CE(labels) + 0.1 * align_loss + 0.5 * BoundaryLoss`.
+Baseline loss: `CE(labels) + 0.1 * contrastive + 0.5 * BoundaryLoss`.
+
+### align_v2 (token-level supervised alignment)
+
+Improves token-matrix alignment by supervising `output.alignment` with primary
+`alignment_token_pairs` from the synthetic generator (InfoNCE over text dim per
+positive visual token). Secondary noisy chunk pairs are excluded from supervision.
+
+```bash
+python scripts/make_synthetic_cmce.py --seed 42
+python scripts/train_tiny.py --epochs 8 --device cpu --seed 42 --out results/tiny_align_v2
+```
+
+Loss weights (CLI): `CE + --contrast-weight 0.1 + --boundary-weight 0.5 + --token-align-weight 1.0`.
+
+Expected keys in `results/tiny_align_v2/metrics.json`:
+`chunk_f1`, `alignment_acc`, `argmax_acc`, `threshold_acc`, `cmce_score`,
+`baseline_ref`, `delta_vs_baseline`.
+
+Synthetic JSON includes `alignment_token_pairs: [{"v": int, "t": int}, ...]`
+(`v` skips CLS=0; `t` is text chunk start token). Regenerate with
+`scripts/make_synthetic_cmce.py` if files are missing.
 
 ## License
 
