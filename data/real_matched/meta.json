@@ -1,0 +1,48 @@
+{
+  "n_train": 80,
+  "n_val": 20,
+  "n_total": 100,
+  "n_failed_downloads": 0,
+  "source": "flickr8k",
+  "source_cli": "flickr",
+  "dataset_counts": {
+    "flickr8k": 100
+  },
+  "matched_captions": true,
+  "grounding": "clip",
+  "clip_model": "transformers:openai/clip-vit-base-patch32",
+  "clip_cache": "/workspace/hf_cache (TRANSFORMERS) / /workspace/clip_cache (open_clip)",
+  "img_size": 64,
+  "patch_size": 16,
+  "num_patches": 16,
+  "seed": 42,
+  "max_caption_tokens": 12,
+  "spotcheck": [
+    {
+      "id": "flickr8k_05691",
+      "text": "A pitbull dog is biting another dog on the face .",
+      "dataset": "flickr8k"
+    },
+    {
+      "id": "flickr8k_00426",
+      "text": "A dog runs by the water 's edge .",
+      "dataset": "flickr8k"
+    },
+    {
+      "id": "flickr8k_00272",
+      "text": "A family is playing on the beach with their dog .",
+      "dataset": "flickr8k"
+    },
+    {
+      "id": "flickr8k_01098",
+      "text": "A girl rides on a swing .",
+      "dataset": "flickr8k"
+    },
+    {
+      "id": "flickr8k_00524",
+      "text": "A tan dog and larger white dog run along the grass .",
+      "dataset": "flickr8k"
+    }
+  ],
+  "notes": "source=flickr8k; CLIP patch-grid: encode each of 4x4=16 cell crops + text chunk; best-matching patch index +1 (CLS offset) becomes alignment_token_pairs.v"
+}

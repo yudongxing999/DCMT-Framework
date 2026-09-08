@@ -8,3 +8,5 @@ torchvision
 # Prefer transformers (lighter install path in many envs); open_clip_torch also works.
 transformers>=4.36  # optional: CLIPModel openai/clip-vit-base-patch32
 # open_clip_torch  # optional alternative CLIP backend
+# optional matched Flickr/COCO download
+# datasets>=2.14
