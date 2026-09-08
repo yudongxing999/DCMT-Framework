@@ -74,6 +74,7 @@ data/CMCE/images/
 data/CMCE/train.json
 data/CMCE/val.json
 data/CMCE/test.json
+data/real/images/
 *.h5
 *.hdf5
 
@@ -84,8 +85,11 @@ wandb/
 runs/
 tensorboard/
 
-# Results
-results/
+# Results: ignore bulky artifacts but keep metrics/README
+results/**
+!results/**/
+!results/**/metrics.json
+!results/**/README.md
 outputs/
 
 # Do NOT ignore root statistical_details.csv (tracked intentionally)
