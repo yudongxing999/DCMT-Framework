@@ -1,0 +1,29 @@
+{
+  "seed": 42,
+  "train_data": "data/real_matched/train.json",
+  "val_data": "data/real_matched/val.json",
+  "device": "cpu",
+  "epochs": 8,
+  "alignment_acc": 0.32,
+  "argmax_acc": 0.32,
+  "threshold_acc": 1.0,
+  "chunk_f1": 0.9124,
+  "cmce_score": 0.5570,
+  "final_train_loss": 5.0134,
+  "train_loss_curve": [7.0774, 5.8462, 5.5249, 5.3260, 5.1982, 5.2209, 5.0628, 5.0134],
+  "loss_weights": {"ce": 1.0, "contrastive": 0.1, "boundary": 0.5, "visual_boundary": 0.25, "token_align": 1.5},
+  "experiment": "tiny_real_v4",
+  "grounding": "clip",
+  "clip_model": "transformers:openai/clip-vit-base-patch32",
+  "dataset_meta": {"n_train": 80, "n_val": 20, "source": "flickr8k", "matched_captions": true, "max_caption_tokens": 12},
+  "real_v2_ref": {"alignment_acc": 0.34375, "cmce_score": 0.5979},
+  "real_v3_ref": {"alignment_acc": 0.3125, "cmce_score": 0.5792},
+  "delta_vs_real_v2": {"alignment_acc": -0.02375},
+  "delta_vs_real_v3": {"alignment_acc": 0.0075},
+  "spotcheck": [
+    {"id": "flickr8k_05691", "text": "A pitbull dog is biting another dog on the face ."},
+    {"id": "flickr8k_00426", "text": "A dog runs by the water 's edge ."},
+    {"id": "flickr8k_01098", "text": "A girl rides on a swing ."}
+  ],
+  "honest_notes": "Matched Flickr8k + CLIP. alignment_acc=0.320 beats real_v3=0.3125; stretch real_v2=0.3438 missed. Images not committed."
+}
