@@ -53,6 +53,10 @@ scripts/train_tiny.py
 data/README_synthetic.md
 results/tiny_baseline/metrics.json
 results/tiny_align_v2/metrics.json
+results/tiny_hard_v1/metrics.json
+results/tiny_hard_v2/metrics.json
+results/tiny_real_v1/metrics.json
+results/tiny_real_v2/metrics.json
 ```
 
 ## Usage
@@ -188,6 +192,53 @@ python scripts/prepare_real_cmce.py --from-dir /path/to/images --n-total 60
 **Caveats:** visual alignments are **pseudo** (patch indices spaced across the
 image; no object detectors). Image binaries under `data/real/images/` are
 re-downloaded by the script and generally not committed. See `data/real/README.md`.
+
+### Harder synthetic (`tiny_hard_v2`) — curriculum lift
+
+Goal: raise hard alignment from ~0.14 toward ≥0.35.
+
+```bash
+python scripts/make_synthetic_cmce.py --seed 42 --difficulty hard --n-train 300 --n-val 60
+python scripts/make_synthetic_cmce.py --seed 42 --difficulty easy --n-train 200 --n-val 40
+python scripts/train_tiny.py --epochs 15 --device cpu --seed 42 \
+  --train-data data/synthetic_hard_train.json \
+  --val-data data/synthetic_hard_val.json \
+  --curriculum-easy-data data/synthetic_train.json \
+  --curriculum-epochs 3 \
+  --token-align-weight 1.75 \
+  --visual-boundary-weight 0.25 \
+  --out results/tiny_hard_v2
+```
+
+Flags: `--curriculum-easy-data`, `--curriculum-epochs`, `--curriculum-mix` (50/50),
+`--token-align-weight`, `--visual-boundary-weight`.
+Hard JSON: primary pairs only in `alignment_token_pairs`; distractors remain in `alignments`.
+Do **not** commit bulky `synthetic_hard_*.json` if large — regenerate with the commands above.
+
+### Real grounding (`tiny_real_v2`)
+
+```bash
+python scripts/prepare_real_cmce.py --n-total 80 --seed 42
+# optional CLIP (skipped if unavailable): --use-clip
+python scripts/train_tiny.py --epochs 8 --device cpu --seed 42 \
+  --train-data data/real/train.json --val-data data/real/val.json \
+  --token-align-weight 1.25 --visual-boundary-weight 0.2 \
+  --out results/tiny_real_v2
+```
+
+NP heuristic + LTR patch columns; images under `data/real/images/` are regenerated (not committed).
+
+### Comparison table (CPU tiny smoke)
+
+| Run | alignment_acc | cmce_score | notes |
+|-----|---------------|------------|-------|
+| tiny_align_v2 (easy) | ≈0.817 | ≈0.890 | easy synthetic token-align |
+| tiny_hard_v1 | ≈0.142 | ≈0.483 | hard, 8ep, no curriculum |
+| tiny_hard_v2 | ≈0.356 | ≈0.607 | curriculum+15ep+w_ta=1.75 (**target≥0.35 met**; stretch 0.5 missed) |
+| tiny_real_v1 | ≈0.344 | ≈0.606 | pseudo visual stride |
+| tiny_real_v2 | ≈0.344 | ≈0.598 | NP+LTR priors; align flat on tiny smoke |
+
+What helped hard_v2: easy warmup curriculum, longer hard training, higher token-align weight, mild visual-boundary loss, cleaner LTR-ish hard visual indices (pairs still primary-only). Real_v2 improved GT structure but did not lift alignment on this tiny set.
 
 ## License
 
