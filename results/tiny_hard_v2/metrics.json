@@ -1,0 +1,23 @@
+{
+  "experiment": "tiny_hard_v2",
+  "seed": 42,
+  "train_data": "data/synthetic_hard_train.json",
+  "val_data": "data/synthetic_hard_val.json",
+  "curriculum": {"easy_data": "data/synthetic_train.json", "curriculum_epochs": 3, "mix": false},
+  "epochs": 15,
+  "loss_weights": {"ce": 1.0, "contrastive": 0.1, "boundary": 0.5, "visual_boundary": 0.25, "token_align": 1.75},
+  "alignment_acc": 0.3561111111111111,
+  "cmce_score": 0.6067276777318394,
+  "chunk_f1": 0.9826525276629319,
+  "argmax_acc": 0.3561111111111111,
+  "threshold_acc": 0.5944444444444444,
+  "train_loss_curve": [5.140275592803955, 4.438046131134033, 4.176067543029785, 6.469286422729493, 5.5208495966593425, 5.1120932642618815, 4.586527986526489, 3.9587855593363446, 3.382809232076009, 2.797328697840373, 2.4090653451283774, 1.994044205347697, 1.7104403686523437, 1.6901325050989786, 1.3694422101974488],
+  "hard_v1_ref": {"alignment_acc": 0.1422222222222222, "cmce_score": 0.48258274858389333, "source": "results/tiny_hard_v1/metrics.json"},
+  "delta_vs_hard_v1": {"alignment_acc": 0.2138888888888889, "cmce_score": 0.12414492914794611},
+  "target": {"alignment_acc": 0.35, "stretch": 0.5},
+  "target_met": true,
+  "stretch_met": false,
+  "techniques": {"curriculum_warmup": true, "elevated_token_align_weight": true, "visual_boundary_supervision": true, "longer_hard_train": true},
+  "what_helped": ["curriculum: 3 epochs easy then 12 epochs hard", "longer hard train (15 total epochs vs 8 in v1)", "elevated token_align_weight=1.75", "visual_boundary_weight=0.25", "milder hard visual stride jitter; primary pairs clean"],
+  "honest_notes": "alignment_acc=0.356 meets target>=0.35 but misses stretch>=0.5. Gain vs hard_v1 ~+0.214."
+}

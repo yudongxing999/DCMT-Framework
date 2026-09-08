@@ -1,0 +1,18 @@
+{
+  "experiment": "tiny_real_v2",
+  "seed": 42,
+  "train_data": "data/real/train.json",
+  "val_data": "data/real/val.json",
+  "epochs": 8,
+  "loss_weights": {"ce": 1.0, "contrastive": 0.1, "boundary": 0.5, "visual_boundary": 0.2, "token_align": 1.25},
+  "alignment_acc": 0.34375,
+  "cmce_score": 0.5979166646805556,
+  "chunk_f1": 0.9791666617013889,
+  "argmax_acc": 0.34375,
+  "threshold_acc": 1.0,
+  "train_loss_curve": [6.165787696838379, 4.73856395483017, 4.0125375390052795, 3.505614697933197, 2.762613743543625, 2.199331134557724, 1.998132050037384, 1.959153413772583],
+  "real_v1_ref": {"alignment_acc": 0.34375, "cmce_score": 0.606249998, "source": "results/tiny_real_v1/metrics.json"},
+  "delta_vs_real_v1": {"alignment_acc": 0.0, "cmce_score": -0.008333333319444414, "chunk_f1": -0.020833333298611145},
+  "techniques_applied": {"noun_phrase_chunking": true, "spatial_ltr_columns": true, "clip": false, "clip_note": "skipped; spatial heuristic kept", "token_align_weight": 1.25, "visual_boundary_weight": 0.2, "epochs": 8},
+  "honest_notes": "alignment_acc~0.344 matches real_v1 within noise; chunk_f1 dipped slightly so cmce a bit lower. NP+LTR improve GT structure on tiny smoke set."
+}
