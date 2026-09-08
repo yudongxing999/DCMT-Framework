@@ -4,3 +4,7 @@ scipy
 tqdm
 Pillow
 torchvision
+# Optional CLIP grounding for scripts/prepare_real_cmce.py --grounding clip
+# Prefer transformers (lighter install path in many envs); open_clip_torch also works.
+transformers>=4.36  # optional: CLIPModel openai/clip-vit-base-patch32
+# open_clip_torch  # optional alternative CLIP backend
