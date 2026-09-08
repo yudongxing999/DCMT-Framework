@@ -24,6 +24,7 @@ pip install -e .
 
 Requirements: `torch`, `numpy`, `scipy`, `tqdm`, `Pillow`, `torchvision`.
 Optional CLIP grounding: `transformers>=4.36` (see requirements.txt).
+Optional matched Flickr/COCO: `datasets` (`jxie/flickr8k`, `phiyodr/coco2017`).
 
 ## Comparison table (CPU tiny smoke)
 
@@ -35,7 +36,8 @@ Optional CLIP grounding: `transformers>=4.36` (see requirements.txt).
 | tiny_hard_v3 | ≈0.380 | ≈0.612 | easy4→mix20, w_ta=2.25, temp=0.05, HN; **≥0.5 missed** |
 | tiny_real_v1 | ≈0.344 | ≈0.606 | pseudo visual stride |
 | tiny_real_v2 | ≈0.344 | ≈0.598 | NP+LTR priors; align flat |
-| tiny_real_v3 | ≈0.312 | ≈0.579 | CLIP ViT-B/32 patch-grid grounding |
+| tiny_real_v3 | ≈0.312 | ≈0.579 | CLIP ViT-B/32 on picsum smoke |
+| tiny_real_v4 | ≈0.320 | ≈0.557 | **matched Flickr8k** + CLIP; beats v3 align |
 
 ### Harder synthetic (`tiny_hard_v3`) — stretch toward 0.5
 
@@ -64,6 +66,22 @@ python scripts/train_tiny.py --epochs 8 --device cpu --seed 42 \
 
 `--grounding {spatial,clip,auto}` (default auto). CLIP: `transformers` `openai/clip-vit-base-patch32`
 (4×4 cell crops ↔ chunk text; `v = patch_idx+1`). Fallback records `grounding: spatial_fallback`.
+
+### Real matched Flickr (`tiny_real_v4`)
+
+```bash
+pip install datasets transformers
+python scripts/prepare_real_cmce.py --source flickr --out-dir data/real_matched \
+  --n-total 100 --seed 42 --grounding clip --max-caption-tokens 12
+python scripts/train_tiny.py --epochs 8 --device cpu --seed 42 \
+  --train-data data/real_matched/train.json --val-data data/real_matched/val.json \
+  --token-align-weight 1.5 --visual-boundary-weight 0.25 \
+  --out results/tiny_real_v4
+```
+
+`--source {auto,flickr,coco,picsum}`. Uses matched Flickr8k captions (`jxie/flickr8k`), not random picsum.
+Images under `data/real_matched/images/` are regenerated (not committed). See `data/real_matched/meta.json`
+and `results/tiny_real_v4/`. alignment_acc≈0.320 beats real_v3 (0.312); stretch vs real_v2 (0.344) missed.
 
 See full package docs / prior experiment sections in git history for baseline, align_v2, hard_v1/v2, real_v1/v2 details.
 
