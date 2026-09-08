@@ -1,0 +1,13 @@
+{
+  "n_train": 64,
+  "n_val": 16,
+  "n_failed_downloads": 0,
+  "grounding": "clip",
+  "clip_model": "transformers:openai/clip-vit-base-patch32",
+  "clip_cache": "/workspace/hf_cache (TRANSFORMERS) / /workspace/clip_cache (open_clip)",
+  "img_size": 64,
+  "patch_size": 16,
+  "num_patches": 16,
+  "seed": 42,
+  "notes": "CLIP patch-grid: encode each of 4x4=16 cell crops + text chunk; best-matching patch index +1 (CLS offset) becomes alignment_token_pairs.v"
+}
