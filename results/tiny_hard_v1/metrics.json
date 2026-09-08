@@ -1,1 +1,148 @@
-PLACEHOLDER
+{
+  "seed": 42,
+  "train_data": "data/synthetic_hard_train.json",
+  "val_data": "data/synthetic_hard_val.json",
+  "device": "cpu",
+  "epochs": 8,
+  "batch_size": 8,
+  "lr": 0.001,
+  "loss_weights": {
+    "ce": 1.0,
+    "contrastive": 0.1,
+    "boundary": 0.5,
+    "token_align": 1.0
+  },
+  "token_align_temperature": 0.07,
+  "config": {
+    "d_model": 64,
+    "n_heads": 4,
+    "n_layers": 1,
+    "d_ff": 128,
+    "v_layers": 1,
+    "patch_size": 16,
+    "img_size": 64,
+    "vocab_size": 1000,
+    "max_seq_length": 64,
+    "num_labels": 10,
+    "dropout": 0.0
+  },
+  "train_history": [
+    {
+      "loss": 5.05616335550944,
+      "ce": 2.764627539316813,
+      "boundary": 0.31393991549809774,
+      "token_align": 1.9270807282129923,
+      "contrastive": 2.07485138575236,
+      "epoch": 1.0
+    },
+    {
+      "loss": 4.31657948811849,
+      "ce": 2.4786540857950845,
+      "boundary": 0.16606789867083233,
+      "token_align": 1.5478552039464315,
+      "contrastive": 2.070362154642741,
+      "epoch": 2.0
+    },
+    {
+      "loss": 3.9599128913879396,
+      "ce": 2.1837252235412596,
+      "boundary": 0.15409282704194388,
+      "token_align": 1.543979344367981,
+      "contrastive": 1.5516189098358155,
+      "epoch": 3.0
+    },
+    {
+      "loss": 3.286673984527588,
+      "ce": 1.5921275901794434,
+      "boundary": 0.14843313525120416,
+      "token_align": 1.54491233030955,
+      "contrastive": 0.7541752179463704,
+      "epoch": 4.0
+    },
+    {
+      "loss": 2.646825396219889,
+      "ce": 0.9676038376490275,
+      "boundary": 0.14863637030124666,
+      "token_align": 1.5532520612080891,
+      "contrastive": 0.5165131489435831,
+      "epoch": 5.0
+    },
+    {
+      "loss": 2.29211763381958,
+      "ce": 0.6403973837693532,
+      "boundary": 0.14492901821931203,
+      "token_align": 1.537355769475301,
+      "contrastive": 0.4189998253186544,
+      "epoch": 6.0
+    },
+    {
+      "loss": 2.002639956474304,
+      "ce": 0.3562725524107615,
+      "boundary": 0.14250183214743933,
+      "token_align": 1.5358062442143758,
+      "contrastive": 0.3931025234858195,
+      "epoch": 7.0
+    },
+    {
+      "loss": 1.7819097995758058,
+      "ce": 0.15281714955965678,
+      "boundary": 0.14198408722877504,
+      "token_align": 1.5204817104339599,
+      "contrastive": 0.3761889628569285,
+      "epoch": 8.0
+    }
+  ],
+  "train_loss_curve": [
+    5.05616335550944,
+    4.31657948811849,
+    3.9599128913879396,
+    3.286673984527588,
+    2.646825396219889,
+    2.29211763381958,
+    2.002639956474304,
+    1.7819097995758058
+  ],
+  "final_train_loss": 1.7819097995758058,
+  "metrics": {
+    "chunk_f1": 0.9931235381264,
+    "threshold_acc": 0.6469444444444444,
+    "argmax_acc": 0.1422222222222222,
+    "alignment_acc": 0.1422222222222222,
+    "alignment_acc_max": 0.6469444444444444,
+    "cmce_score": 0.48258274858389333,
+    "metric_notes": "alignment_acc is argmax_acc (pred_t = argmax_t S[v,t] == gt t); threshold_acc uses score > alignment_threshold on mapped (v,t); pairs from alignment_token_pairs when present, else chunk\u2192token mapping"
+  },
+  "chunk_f1": 0.9931235381264,
+  "alignment_acc": 0.1422222222222222,
+  "argmax_acc": 0.1422222222222222,
+  "threshold_acc": 0.6469444444444444,
+  "cmce_score": 0.48258274858389333,
+  "baseline_ref": {
+    "chunk_f1": 0.9999999949999999,
+    "alignment_acc": 0.28791666666666665,
+    "cmce_score": 0.5727499979999999,
+    "source": "results/tiny_baseline/metrics.json"
+  },
+  "delta_vs_baseline": {
+    "alignment_acc": -0.14569444444444446,
+    "cmce_score": -0.0901672494161066,
+    "chunk_f1": -0.006876456873599945
+  },
+  "align_v2_easy_ref": {
+    "alignment_acc": 0.8166666666666667,
+    "cmce_score": 0.889999998,
+    "chunk_f1": 0.9999999949999999,
+    "threshold_acc": 0.6166666666666666,
+    "source": "results/tiny_align_v2/metrics.json",
+    "note": "easy synthetic align_v2 (epochs=8, seed=42)"
+  },
+  "delta_vs_align_v2_easy": {
+    "alignment_acc": -0.6744444444444444,
+    "cmce_score": -0.40741724941610663,
+    "chunk_f1": -0.006876456873599945,
+    "threshold_acc": 0.030277777777777848
+  },
+  "checkpoint": "results/tiny_hard_v1/model.pt",
+  "checkpoint_size_mb": 4.88,
+  "metric_notes": "alignment_acc is argmax_acc (pred_t = argmax_t S[v,t] == gt t); threshold_acc uses score > alignment_threshold on mapped (v,t); pairs from alignment_token_pairs when present, else chunk\u2192token mapping"
+}
