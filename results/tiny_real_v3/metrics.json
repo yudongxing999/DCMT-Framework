@@ -1,0 +1,31 @@
+{
+  "experiment": "tiny_real_v3",
+  "seed": 42,
+  "epochs": 8,
+  "alignment_acc": 0.3125,
+  "argmax_acc": 0.3125,
+  "threshold_acc": 1.0,
+  "chunk_f1": 0.9791666617013889,
+  "cmce_score": 0.5791666646805556,
+  "grounding": "clip",
+  "clip_model": "transformers:openai/clip-vit-base-patch32",
+  "loss_weights": {
+    "ce": 1.0,
+    "contrastive": 0.1,
+    "boundary": 0.5,
+    "visual_boundary": 0.25,
+    "token_align": 1.5
+  },
+  "train_loss_curve": [6.5694, 5.1713, 4.4755, 4.1406, 3.5084, 2.9232, 2.5744, 2.3758],
+  "real_v2_ref": {
+    "alignment_acc": 0.34375,
+    "cmce_score": 0.5979,
+    "source": "results/tiny_real_v2/metrics.json"
+  },
+  "delta_vs_real_v2": {
+    "alignment_acc": -0.03125,
+    "cmce_score": -0.01875
+  },
+  "honest_notes": "CLIP ViT-B/32 patch-grid grounding works; align slightly below real_v2 on picsum-heavy smoke set.",
+  "reproduce": "python scripts/prepare_real_cmce.py --n-total 80 --seed 42 --grounding clip && python scripts/train_tiny.py --epochs 8 --device cpu --seed 42 --train-data data/real/train.json --val-data data/real/val.json --token-align-weight 1.5 --visual-boundary-weight 0.25 --out results/tiny_real_v3"
+}

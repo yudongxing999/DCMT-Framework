@@ -1,0 +1,43 @@
+{
+  "experiment": "tiny_hard_v3",
+  "seed": 43,
+  "epochs": 24,
+  "alignment_acc": 0.3802777777777778,
+  "argmax_acc": 0.3802777777777778,
+  "threshold_acc": 0.37611111111111106,
+  "chunk_f1": 0.9605024555265241,
+  "cmce_score": 0.6123676488772763,
+  "target": {"alignment_acc": 0.5},
+  "target_met": false,
+  "curriculum": {
+    "easy_data": "data/synthetic_train.json",
+    "curriculum_epochs": 4,
+    "then_mix": true
+  },
+  "loss_weights": {
+    "ce": 1.0,
+    "contrastive": 0.1,
+    "boundary": 0.5,
+    "visual_boundary": 0.3,
+    "token_align": 2.25
+  },
+  "token_align_temperature": 0.05,
+  "hard_neg_weight": 0.4,
+  "hard_neg_boost": 0.75,
+  "hard_v2_ref": {
+    "alignment_acc": 0.3561,
+    "cmce_score": 0.6067,
+    "source": "results/tiny_hard_v2/metrics.json"
+  },
+  "delta_vs_hard_v2": {
+    "alignment_acc": 0.0242,
+    "cmce_score": 0.0057
+  },
+  "attempts": [
+    {"name": "attempt1_seed42_then_mix", "alignment_acc": 0.3733},
+    {"name": "attempt2_hard_only_stronger", "alignment_acc": 0.3586},
+    {"name": "attempt3_seed43_then_mix", "alignment_acc": 0.3803, "note": "best"}
+  ],
+  "honest_notes": "Best alignment_acc≈0.380 misses ≥0.5. Modest lift vs hard_v2. Tiny d_model=64 plateaus ~0.35–0.38.",
+  "reproduce": "python scripts/train_tiny.py --epochs 24 --device cpu --seed 43 --train-data data/synthetic_hard_train.json --val-data data/synthetic_hard_val.json --curriculum-easy-data data/synthetic_train.json --curriculum-epochs 4 --curriculum-then-mix --token-align-weight 2.25 --token-align-temperature 0.05 --visual-boundary-weight 0.3 --hard-neg-weight 0.4 --hard-neg-boost 0.75 --out results/tiny_hard_v3"
+}
