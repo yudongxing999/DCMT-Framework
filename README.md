@@ -37,9 +37,11 @@ Optional matched Flickr/COCO: `datasets` (`jxie/flickr8k`, `phiyodr/coco2017`).
 | tiny_real_v1 | ≈0.344 | ≈0.606 | ≈1.00 | ~1.27M | pseudo visual stride |
 | tiny_real_v2 | ≈0.344 | ≈0.598 | — | ~1.27M | NP+LTR priors |
 | tiny_real_v3 | ≈0.312 | ≈0.579 | — | ~1.27M | CLIP on picsum |
-| tiny_real_v4 | ≈0.320 | ≈0.557 | ≈0.912 | ~1.27M | **Flickr matched** + CLIP; tiny |
+| tiny_real_v4 | ≈0.320 | ≈0.557 | ≈0.912 | ~1.27M | **Flickr** matched + CLIP; tiny; n=100 ep=8 |
 | tiny_real_v5 | ≈0.156 | ≈0.471 | ≈0.945 | **~3.19M** | Flickr + CLIP + **small**; align ↓ |
-| tiny_real_coco_v1 | ≈0.254 | ≈0.502 | ≈0.873 | **~3.19M** | **COCO** matched + CLIP + small |
+| tiny_real_v6 | ≈0.273 | ≈0.526 | ≈0.906 | ~1.27M | Flickr scaled n=400 ep=20 **tiny**; align vs v4 ↓ |
+| tiny_real_coco_v1 | ≈0.254 | ≈0.502 | ≈0.873 | **~3.19M** | **COCO** matched + CLIP + **small**; n=100 ep=8 |
+| tiny_real_coco_v2 | ≈0.291 | ≈0.535 | ≈0.900 | ~1.27M | COCO scaled n=400 ep=20 **tiny** |
 
 ### Model size presets (`--model-size`)
 
@@ -48,6 +50,38 @@ Optional matched Flickr/COCO: `datasets` (`jxie/flickr8k`, `phiyodr/coco2017`).
 - `small`: d_model=128, n_layers=2, d_ff=256, v_layers=2, dropout=0.05 (~3.19M params)
 
 `metrics.json` records `model_size`, `num_params`, and full `config`.
+`scripts/prepare_real_cmce.py` allows `--n-total` up to 500 (was capped at 120).
+
+### Scale experiments (v6 / coco_v2)
+
+| Run | n_train/n_val | epochs | model | align | cmce | chunk_f1 |
+|-----|---------------|--------|-------|-------|------|----------|
+| tiny_real_v4 (baseline) | 80/20 | 8 | tiny | ≈0.320 | ≈0.557 | ≈0.912 |
+| tiny_real_v6 | 320/80 | 20 | tiny | ≈0.273 | ≈0.526 | ≈0.906 |
+| tiny_real_coco_v1 (baseline) | 80/20 | 8 | **small** | ≈0.254 | ≈0.502 | ≈0.873 |
+| tiny_real_coco_v2 | 320/80 | 20 | **tiny** | ≈0.291 | ≈0.535 | ≈0.900 |
+
+Honest takeaway: on CPU smoke, **scaling data/epochs with tiny did not beat Flickr v4 alignment**;
+COCO scaled-tiny beats prior COCO-small on alignment
+(note different model size + larger val set).
+
+```bash
+# Flickr scaled tiny
+python scripts/prepare_real_cmce.py --source flickr --out-dir data/real_matched_v6 \
+  --n-total 400 --seed 42 --grounding clip --max-caption-tokens 12
+python scripts/train_tiny.py --model-size tiny --epochs 20 --device cpu --seed 42 \
+  --train-data data/real_matched_v6/train.json --val-data data/real_matched_v6/val.json \
+  --token-align-weight 1.5 --visual-boundary-weight 0.25 \
+  --out results/tiny_real_v6
+
+# COCO scaled tiny
+python scripts/prepare_real_cmce.py --source coco --out-dir data/real_coco_v2 \
+  --n-total 400 --seed 42 --grounding clip --max-caption-tokens 12
+python scripts/train_tiny.py --model-size tiny --epochs 20 --device cpu --seed 42 \
+  --train-data data/real_coco_v2/train.json --val-data data/real_coco_v2/val.json \
+  --token-align-weight 1.5 --visual-boundary-weight 0.25 \
+  --out results/tiny_real_coco_v2
+```
 
 ### Real Flickr small (`tiny_real_v5`)
 
@@ -87,7 +121,7 @@ python scripts/train_tiny.py --epochs 8 --device cpu --seed 42 \
   --out results/tiny_real_v4
 ```
 
-Images under `data/*/images/` are regenerated (not committed). See `results/tiny_real_v4|v5|coco_v1/`.
+Images under `data/*/images/` are regenerated (not committed). See `results/tiny_real_v4|v5|v6|coco_v1|coco_v2/`.
 
 ## License
 
