@@ -1,0 +1,100 @@
+{
+  "seed": 42,
+  "model_size": "small",
+  "num_params": 3194893,
+  "train_data": "data/real_coco/train.json",
+  "val_data": "data/real_coco/val.json",
+  "device": "cpu",
+  "epochs": 8,
+  "alignment_acc": 0.2542,
+  "argmax_acc": 0.2542,
+  "threshold_acc": 0.9333,
+  "chunk_f1": 0.8725,
+  "cmce_score": 0.5015,
+  "final_train_loss": 4.2745,
+  "train_loss_curve": [
+    8.0837,
+    6.5103,
+    5.4142,
+    5.269,
+    5.4602,
+    5.1812,
+    4.6293,
+    4.2745
+  ],
+  "loss_weights": {
+    "ce": 1.0,
+    "contrastive": 0.1,
+    "boundary": 0.5,
+    "visual_boundary": 0.25,
+    "token_align": 1.5
+  },
+  "config": {
+    "d_model": 128,
+    "n_heads": 4,
+    "n_layers": 2,
+    "d_ff": 256,
+    "v_layers": 2,
+    "patch_size": 16,
+    "img_size": 64,
+    "vocab_size": 1000,
+    "max_seq_length": 64,
+    "num_labels": 10,
+    "dropout": 0.05
+  },
+  "experiment": "tiny_real_coco_v1",
+  "grounding": "clip",
+  "clip_model": "transformers:openai/clip-vit-base-patch32",
+  "dataset_meta": {
+    "n_train": 80,
+    "n_val": 20,
+    "source": "coco",
+    "matched_captions": true,
+    "max_caption_tokens": 12
+  },
+  "real_v4_ref": {
+    "alignment_acc": 0.32,
+    "cmce_score": 0.557,
+    "model_size": "tiny"
+  },
+  "real_v5_ref": {
+    "alignment_acc": 0.1558,
+    "cmce_score": 0.4714,
+    "model_size": "small",
+    "num_params": 3194893
+  },
+  "delta_vs_real_v4": {
+    "alignment_acc": -0.0658
+  },
+  "delta_vs_real_v5": {
+    "alignment_acc": 0.0984
+  },
+  "spotcheck": [
+    {
+      "id": "coco_000000324927",
+      "text": "A plate of two slices of pizza and a cup of juice.",
+      "dataset": "coco"
+    },
+    {
+      "id": "coco_000000058111",
+      "text": "An orange and white cat laying on top of a sink.",
+      "dataset": "coco"
+    },
+    {
+      "id": "coco_000000460682",
+      "text": "a horse that is laying down in a field",
+      "dataset": "coco"
+    },
+    {
+      "id": "coco_000000189078",
+      "text": "Variety of fruits such as bananas, oranges, and apples on a platter.",
+      "dataset": "coco"
+    },
+    {
+      "id": "coco_000000415882",
+      "text": "a woman lying on a bed underneath a blanket",
+      "dataset": "coco"
+    }
+  ],
+  "honest_notes": "COCO matched (phiyodr/coco2017) + CLIP + model-size=small. align~0.254 beats Flickr-small v5 (0.156) but trails Flickr-tiny v4 (0.320). Spot-check captions match images. Images/ckpt not committed.\n"
+}

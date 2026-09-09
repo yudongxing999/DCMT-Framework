@@ -1,0 +1,85 @@
+{
+  "seed": 42,
+  "model_size": "small",
+  "num_params": 3194893,
+  "train_data": "data/real_matched/train.json",
+  "val_data": "data/real_matched/val.json",
+  "device": "cpu",
+  "epochs": 8,
+  "alignment_acc": 0.1558,
+  "argmax_acc": 0.1558,
+  "threshold_acc": 1.0,
+  "chunk_f1": 0.9448,
+  "cmce_score": 0.4714,
+  "final_train_loss": 5.5013,
+  "train_loss_curve": [
+    8.1834,
+    6.3044,
+    5.7939,
+    5.7081,
+    5.5075,
+    5.4374,
+    5.7525,
+    5.5013
+  ],
+  "loss_weights": {
+    "ce": 1.0,
+    "contrastive": 0.1,
+    "boundary": 0.5,
+    "visual_boundary": 0.25,
+    "token_align": 1.5
+  },
+  "config": {
+    "d_model": 128,
+    "n_heads": 4,
+    "n_layers": 2,
+    "d_ff": 256,
+    "v_layers": 2,
+    "patch_size": 16,
+    "img_size": 64,
+    "vocab_size": 1000,
+    "max_seq_length": 64,
+    "num_labels": 10,
+    "dropout": 0.05
+  },
+  "experiment": "tiny_real_v5",
+  "grounding": "clip",
+  "clip_model": "transformers:openai/clip-vit-base-patch32",
+  "dataset_meta": {
+    "n_train": 80,
+    "n_val": 20,
+    "source": "flickr8k",
+    "matched_captions": true,
+    "max_caption_tokens": 12
+  },
+  "real_v4_ref": {
+    "alignment_acc": 0.32,
+    "cmce_score": 0.557,
+    "chunk_f1": 0.9124,
+    "model_size": "tiny",
+    "num_params": 1268493
+  },
+  "delta_vs_real_v4": {
+    "alignment_acc": -0.1642,
+    "cmce_score": -0.0856,
+    "chunk_f1": 0.0324
+  },
+  "spotcheck": [
+    {
+      "id": "flickr8k_05691",
+      "text": "A pitbull dog is biting another dog on the face .",
+      "dataset": "flickr8k"
+    },
+    {
+      "id": "flickr8k_00426",
+      "text": "A dog runs by the water 's edge .",
+      "dataset": "flickr8k"
+    },
+    {
+      "id": "flickr8k_00272",
+      "text": "A family is playing on the beach with their dog .",
+      "dataset": "flickr8k"
+    }
+  ],
+  "honest_notes": "Flickr matched + CLIP + model-size=small (~3.19M). Larger model HURT alignment vs tiny v4 (0.156 vs 0.320); chunk_f1 rose (0.945 vs 0.912). Under-trained / over-param for n=80x8ep CPU smoke. Images/ckpt not committed.\n"
+}
