@@ -1,0 +1,63 @@
+{
+  "seed": 42,
+  "model_size": "tiny",
+  "num_params": 1268493,
+  "train_data": "data/real_matched_v6/train.json",
+  "val_data": "data/real_matched_v6/val.json",
+  "device": "cpu",
+  "epochs": 20,
+  "batch_size": 8,
+  "lr": 0.001,
+  "loss_weights": {
+    "ce": 1.0,
+    "contrastive": 0.1,
+    "boundary": 0.5,
+    "visual_boundary": 0.25,
+    "token_align": 1.5
+  },
+  "config": {
+    "d_model": 64,
+    "n_heads": 4,
+    "n_layers": 1,
+    "d_ff": 128,
+    "v_layers": 1,
+    "patch_size": 16,
+    "img_size": 64,
+    "vocab_size": 1000,
+    "max_seq_length": 64,
+    "num_labels": 10,
+    "dropout": 0.0
+  },
+  "final_train_loss": 2.592242234945297,
+  "alignment_acc": 0.2725,
+  "cmce_score": 0.5259451639736971,
+  "chunk_f1": 0.9061129099342426,
+  "argmax_acc": 0.2725,
+  "threshold_acc": 0.9460416666666667,
+  "metrics": {
+    "chunk_f1": 0.9061129099342426,
+    "threshold_acc": 0.9460416666666667,
+    "argmax_acc": 0.2725,
+    "alignment_acc": 0.2725,
+    "alignment_acc_max": 0.9460416666666667,
+    "cmce_score": 0.5259451639736971,
+    "metric_notes": "alignment_acc is argmax_acc (pred_t = argmax_t S[v,t] == gt t); threshold_acc uses score > alignment_threshold on mapped (v,t); pairs from alignment_token_pairs when present, else chunk->token mapping"
+  },
+  "n_train_val_note": "see data/*/meta.json (320/80 for scale runs)",
+  "checkpoint": "results/tiny_real_v6/model.pt",
+  "checkpoint_size_mb": 4.88,
+  "techniques": {
+    "curriculum_warmup": false,
+    "curriculum_mix_50_50": false,
+    "curriculum_then_mix": false,
+    "elevated_token_align_weight": true,
+    "visual_boundary_supervision": true,
+    "longer_hard_train": true,
+    "hard_negative_mining": false,
+    "lower_temperature": false,
+    "d_model": 64,
+    "model_size": "tiny",
+    "n_layers": 1,
+    "v_layers": 1
+  }
+}
