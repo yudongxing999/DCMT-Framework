@@ -1,0 +1,48 @@
+{
+  "n_train": 320,
+  "n_val": 80,
+  "n_total": 400,
+  "n_failed_downloads": 0,
+  "source": "coco",
+  "source_cli": "coco",
+  "dataset_counts": {
+    "coco": 400
+  },
+  "matched_captions": true,
+  "grounding": "clip",
+  "clip_model": "transformers:openai/clip-vit-base-patch32",
+  "clip_cache": "/workspace/hf_cache (TRANSFORMERS) / /workspace/clip_cache (open_clip)",
+  "img_size": 64,
+  "patch_size": 16,
+  "num_patches": 16,
+  "seed": 42,
+  "max_caption_tokens": 12,
+  "spotcheck": [
+    {
+      "id": "coco_000000131138",
+      "text": "a desk with a cup plate laptop monitor and keyboard",
+      "dataset": "coco"
+    },
+    {
+      "id": "coco_000000051712",
+      "text": "A man skiing down the side of a snow covered mountain.",
+      "dataset": "coco"
+    },
+    {
+      "id": "coco_000000206487",
+      "text": "A man riding a motorcycle with a woman on back of it.",
+      "dataset": "coco"
+    },
+    {
+      "id": "coco_000000478474",
+      "text": "A truck that is sitting in the street.",
+      "dataset": "coco"
+    },
+    {
+      "id": "coco_000000178744",
+      "text": "A Chicago logo boat is traveling in the water.",
+      "dataset": "coco"
+    }
+  ],
+  "notes": "source=coco; CLIP patch-grid: encode each of 4x4=16 cell crops + text chunk; best-matching patch index +1 (CLS offset) becomes alignment_token_pairs.v"
+}
