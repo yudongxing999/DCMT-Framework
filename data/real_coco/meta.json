@@ -1,0 +1,48 @@
+{
+  "n_train": 80,
+  "n_val": 20,
+  "n_total": 100,
+  "n_failed_downloads": 0,
+  "source": "coco",
+  "source_cli": "coco",
+  "dataset_counts": {
+    "coco": 100
+  },
+  "matched_captions": true,
+  "grounding": "clip",
+  "clip_model": "transformers:openai/clip-vit-base-patch32",
+  "clip_cache": "/workspace/hf_cache (TRANSFORMERS) / /workspace/clip_cache (open_clip)",
+  "img_size": 64,
+  "patch_size": 16,
+  "num_patches": 16,
+  "seed": 42,
+  "max_caption_tokens": 12,
+  "spotcheck": [
+    {
+      "id": "coco_000000324927",
+      "text": "A plate of two slices of pizza and a cup of juice.",
+      "dataset": "coco"
+    },
+    {
+      "id": "coco_000000058111",
+      "text": "An orange and white cat laying on top of a sink.",
+      "dataset": "coco"
+    },
+    {
+      "id": "coco_000000460682",
+      "text": "a horse that is laying down in a field",
+      "dataset": "coco"
+    },
+    {
+      "id": "coco_000000189078",
+      "text": "Variety of fruits such as bananas, oranges, and apples on a platter.",
+      "dataset": "coco"
+    },
+    {
+      "id": "coco_000000415882",
+      "text": "a woman lying on a bed underneath a blanket",
+      "dataset": "coco"
+    }
+  ],
+  "notes": "source=coco; CLIP patch-grid: encode each of 4x4=16 cell crops + text chunk; best-matching patch index +1 (CLS offset) becomes alignment_token_pairs.v"
+}
