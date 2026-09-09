@@ -12,7 +12,7 @@ else:
         raise FileNotFoundError("missing train_tiny.part*.b64 / train_tiny.payload.b64")
     _b64 = _mono.read_text().strip()
 _raw = gzip.decompress(base64.b64decode(_b64))
-_expect_crc = 2478574390
+_expect_crc = 2067398022
 _got = zlib.crc32(_raw) & 0xffffffff
 if _got != _expect_crc:
     raise RuntimeError(f"train_tiny payload CRC mismatch: {_got:08x} != {_expect_crc:08x}")
