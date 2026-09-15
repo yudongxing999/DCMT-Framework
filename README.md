@@ -4,7 +4,7 @@
 
 Paper: *Adaptive Token Boundaries: Integrating Human Chunking Mechanisms into Multimodal LLMs*
 
-**Experiment status:** paused. Full protocol, tables, takeaways, and reproduce commands → **[EXPERIMENTS.md](./EXPERIMENTS.md)**.
+**Experiment status:** paused. Log → [EXPERIMENTS.md](./EXPERIMENTS.md). Paper ablations → [docs/PAPER_ABLATIONS.md](./docs/PAPER_ABLATIONS.md).
 
 ## Migration note
 
