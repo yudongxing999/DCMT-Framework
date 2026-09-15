@@ -1,5 +1,7 @@
 # DCMT / CMCE Experiment Log (Reproducible)
 
+Paper ablations (fixed protocol + LaTeX tables): [docs/PAPER_ABLATIONS.md](./docs/PAPER_ABLATIONS.md).
+
 Status: **paused** at this document. Numbers below are CPU smoke runs for pipeline validation, **not** paper-ready CMCE benchmarks.
 
 Repo: https://github.com/yudongxing999/DCMT-Framework  
@@ -147,4 +149,4 @@ Each folder’s `metrics.json` is the source of truth for that run.
 
 ## 5. Pause note
 
-Experiment iteration paused here by choice. Prefer extending **this document + metrics.json** over ad-hoc README sprawl when resuming.
+Experiment iteration paused here by choice. Prefer extending **this document + metrics.json** over ad-hoc README sprawl when resuming. Paper ablation materials (fixed protocol, LaTeX tables, suggested Results text) live in [docs/PAPER_ABLATIONS.md](./docs/PAPER_ABLATIONS.md).
