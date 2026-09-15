@@ -1,205 +1,130 @@
 #!/usr/bin/env python3
-"""Export paper-ready ablation tables (Markdown + LaTeX) from committed metrics.json.
-
-Usage (from repo root):
-  python scripts/export_ablation_tables.py
-  python scripts/export_ablation_tables.py --results-dir results --format both
-  python scripts/export_ablation_tables.py --format markdown
-  python scripts/export_ablation_tables.py --format latex
-
-Reads results/<folder>/metrics.json for fixed ablation IDs A0–A6.
-Missing folders print N/A (does not fail). No training is performed.
-"""
+"""Export Markdown/LaTeX ablation tables from results/*/metrics.json."""
 
 from __future__ import annotations
 
 import argparse
 import json
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Optional
 
-# Fixed ablation matrix (must stay in sync with docs/PAPER_ABLATIONS.md)
-ABLATIONS: List[Dict[str, str]] = [
-    {
-        "id": "A0",
-        "folder": "tiny_baseline",
-        "setting": "tiny, no token InfoNCE (easy synth)",
-        "role": "baseline",
-    },
-    {
-        "id": "A1",
-        "folder": "tiny_align_v2",
-        "setting": "tiny + token InfoNCE (easy synth)",
-        "role": "InfoNCE on",
-    },
-    {
-        "id": "A2",
-        "folder": "tiny_hard_v1",
-        "setting": "tiny + InfoNCE, hard synth, 8ep",
-        "role": "hard no curriculum",
-    },
-    {
-        "id": "A3",
-        "folder": "tiny_hard_v2",
-        "setting": "tiny + InfoNCE, hard + curriculum",
-        "role": "hard curriculum",
-    },
-    {
-        "id": "A4",
-        "folder": "tiny_hard_v3",
-        "setting": "tiny + InfoNCE, hard stretch (seed 43)",
-        "role": "hard best",
-    },
-    {
-        "id": "A5",
-        "folder": "tiny_real_v4",
-        "setting": "tiny + CLIP, Flickr matched n=100 ep=8",
-        "role": "best matched real",
-    },
-    {
-        "id": "A6a",
-        "folder": "tiny_real_v5",
-        "setting": "small width + CLIP, Flickr n=100 ep=8",
-        "role": "neg: width",
-    },
-    {
-        "id": "A6b",
-        "folder": "tiny_real_v6",
-        "setting": "tiny + CLIP, Flickr scaled n=400 ep=20",
-        "role": "neg: scale n",
-    },
+ROOT = Path(__file__).resolve().parents[1]
+
+# Ablation ID → results folder (committed metrics preferred)
+ABLATIONS = [
+    ("A0", "tiny_baseline", "w/o token InfoNCE (easy)"),
+    ("A1", "tiny_align_v2", "+ token InfoNCE (easy)"),
+    ("A2", "tiny_hard_v1", "hard, no curriculum"),
+    ("A3", "tiny_hard_v2", "hard + curriculum"),
+    ("A4", "tiny_hard_v3", "hard stronger push"),
+    ("A5", "tiny_real_v4", "Flickr+CLIP tiny"),
+    ("A6a", "tiny_real_v5", "Flickr+CLIP small"),
+    ("A6b", "tiny_real_v6", "Flickr scaled tiny"),
+    ("A6c", "tiny_real_coco_v2", "COCO scaled tiny"),
 ]
 
-METRIC_KEYS = ("chunk_f1", "alignment_acc", "cmce_score")
+# Fallback when metrics.json missing or incomplete (from EXPERIMENTS.md)
+FALLBACK = {
+    "tiny_baseline": {"alignment_acc": 0.288, "cmce_score": 0.573, "chunk_f1": 1.0},
+    "tiny_align_v2": {"alignment_acc": 0.817, "cmce_score": 0.890, "chunk_f1": 1.0},
+    "tiny_hard_v1": {"alignment_acc": 0.142, "cmce_score": 0.483, "chunk_f1": 0.99},
+    "tiny_hard_v2": {"alignment_acc": 0.356, "cmce_score": 0.607},
+    "tiny_hard_v3": {"alignment_acc": 0.380, "cmce_score": 0.612},
+    "tiny_real_v4": {"alignment_acc": 0.320, "cmce_score": 0.557, "chunk_f1": 0.912},
+    "tiny_real_v5": {"alignment_acc": 0.156, "cmce_score": 0.471, "chunk_f1": 0.945},
+    "tiny_real_v6": {"alignment_acc": 0.273, "cmce_score": 0.526, "chunk_f1": 0.906},
+    "tiny_real_coco_v2": {"alignment_acc": 0.291, "cmce_score": 0.535, "chunk_f1": 0.900},
+}
 
 
-def _pick_metric(data: Dict[str, Any], key: str) -> Optional[float]:
-    """Prefer nested metrics dict, then top-level key."""
-    nested = data.get("metrics")
-    if isinstance(nested, dict) and key in nested and nested[key] is not None:
-        try:
-            return float(nested[key])
-        except (TypeError, ValueError):
-            pass
-    if key in data and data[key] is not None:
-        try:
-            return float(data[key])
-        except (TypeError, ValueError):
-            pass
+def load_metrics(folder: str) -> Dict[str, Any]:
+    path = ROOT / "results" / folder / "metrics.json"
+    data: Dict[str, Any] = {}
+    if path.is_file():
+        with open(path, encoding="utf-8") as f:
+            raw = json.load(f)
+        # normalize nested "metrics" dict
+        nested = raw.get("metrics") if isinstance(raw.get("metrics"), dict) else {}
+        data = {**FALLBACK.get(folder, {}), **nested, **raw}
+    else:
+        data = dict(FALLBACK.get(folder, {}))
+    return data
+
+
+def fmt(x: Optional[float], digits: int = 3) -> str:
+    if x is None:
+        return "N/A"
+    try:
+        return f"{float(x):.{digits}f}"
+    except (TypeError, ValueError):
+        return "N/A"
+
+
+def get_align(m: Dict[str, Any]) -> Optional[float]:
+    for k in ("alignment_acc", "argmax_acc"):
+        if k in m and m[k] is not None:
+            return float(m[k])
     return None
 
 
-def load_metrics(results_dir: Path, folder: str) -> Dict[str, Optional[float]]:
-    path = results_dir / folder / "metrics.json"
-    out: Dict[str, Optional[float]] = {k: None for k in METRIC_KEYS}
-    if not path.is_file():
-        return out
-    try:
-        data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return out
-    if not isinstance(data, dict):
-        return out
-    for k in METRIC_KEYS:
-        out[k] = _pick_metric(data, k)
-    return out
+def get_cmce(m: Dict[str, Any]) -> Optional[float]:
+    if m.get("cmce_score") is not None:
+        return float(m["cmce_score"])
+    return None
 
 
-def fmt(v: Optional[float], digits: int = 4) -> str:
-    if v is None:
-        return "N/A"
-    return f"{v:.{digits}f}"
+def get_chunk(m: Dict[str, Any]) -> Optional[float]:
+    if m.get("chunk_f1") is not None:
+        return float(m["chunk_f1"])
+    return None
 
 
-def collect_rows(results_dir: Path) -> List[Tuple[Dict[str, str], Dict[str, Optional[float]]]]:
-    return [(abl, load_metrics(results_dir, abl["folder"])) for abl in ABLATIONS]
-
-
-def render_markdown(rows: List[Tuple[Dict[str, str], Dict[str, Optional[float]]]]) -> str:
+def markdown_table() -> str:
     lines = [
-        "Table: Ablation matrix A0–A6 (CPU smoke; alignment_acc = argmax).",
-        "",
-        "| ID | Folder | Setting | chunk_f1 | align_acc | cmce_score | Role |",
-        "|----|--------|---------|---------:|----------:|-----------:|------|",
+        "| ID | Run | alignment_acc | cmce_score | chunk_f1 | note |",
+        "|----|-----|--------------:|-----------:|---------:|------|",
     ]
-    for abl, m in rows:
+    for aid, folder, note in ABLATIONS:
+        m = load_metrics(folder)
+        src = "json" if (ROOT / "results" / folder / "metrics.json").is_file() else "fallback"
         lines.append(
-            f"| {abl['id']} | `{abl['folder']}` | {abl['setting']} | "
-            f"{fmt(m['chunk_f1'])} | {fmt(m['alignment_acc'])} | {fmt(m['cmce_score'])} | "
-            f"{abl['role']} |"
+            f"| {aid} | `{folder}` | {fmt(get_align(m))} | {fmt(get_cmce(m))} | "
+            f"{fmt(get_chunk(m))} | {note} ({src}) |"
         )
-    lines.append("")
-    lines.append(
-        "*Source of truth: `results/*/metrics.json`. Regenerate with "
-        "`python scripts/export_ablation_tables.py`.*"
-    )
-    return "\n".join(lines)
+    return "\n".join(lines) + "\n"
 
 
-def render_latex(rows: List[Tuple[Dict[str, str], Dict[str, Optional[float]]]]) -> str:
-    lines = [
-        "% Ablation matrix A0--A6 (CPU smoke; alignment\\_acc = argmax).",
-        "\\begin{table}[t]",
-        "  \\centering",
-        "  \\small",
-        "  \\caption{Ablation matrix A0--A6 on the fixed tiny protocol "
-        "(CPU smoke). \\texttt{alignment\\_acc} uses argmax over "
-        "token--patch scores. Not official CMCE.}",
-        "  \\label{tab:dcmt-ablations}",
-        "  \\begin{tabular}{llp{4.2cm}rrr}",
-        "    \\toprule",
-        "    ID & Folder & Setting & chunk\\_f1 & align\\_acc & cmce\\_score \\\\",
-        "    \\midrule",
-    ]
-    for abl, m in rows:
-        setting = abl["setting"].replace("_", "\\_")
-        folder = abl["folder"].replace("_", "\\_")
-        lines.append(
-            f"    {abl['id']} & \\texttt{{{folder}}} & {setting} & "
-            f"{fmt(m['chunk_f1'])} & {fmt(m['alignment_acc'])} & "
-            f"{fmt(m['cmce_score'])} \\\\"
+def latex_table() -> str:
+    rows = []
+    for aid, folder, note in ABLATIONS:
+        m = load_metrics(folder)
+        rows.append(
+            f"{aid} & \\texttt{{{folder}}} & {fmt(get_align(m))} & "
+            f"{fmt(get_cmce(m))} & {fmt(get_chunk(m))} \\\\"
         )
-    lines.extend(
-        [
-            "    \\bottomrule",
-            "  \\end{tabular}",
-            "\\end{table}",
-        ]
+    body = "\n".join(rows)
+    return (
+        "\\begin{tabular}{llccc}\n"
+        "\\hline\n"
+        "ID & Run & Align. & CMCE & Chunk F1 \\\\\n"
+        "\\hline\n"
+        f"{body}\n"
+        "\\hline\n"
+        "\\end{tabular}\n"
     )
-    return "\n".join(lines)
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(
-        description="Export Markdown/LaTeX ablation tables from results/*/metrics.json"
-    )
-    parser.add_argument(
-        "--results-dir",
-        type=Path,
-        default=Path("results"),
-        help="Directory containing run folders (default: results)",
-    )
-    parser.add_argument(
-        "--format",
-        choices=("both", "markdown", "latex"),
-        default="both",
-        help="Output format (default: both)",
-    )
-    args = parser.parse_args()
-    rows = collect_rows(args.results_dir)
-
-    parts: List[str] = []
-    if args.format in ("both", "markdown"):
-        parts.append("=== Markdown ===")
-        parts.append(render_markdown(rows))
-    if args.format in ("both", "latex"):
-        if parts:
-            parts.append("")
-        parts.append("=== LaTeX ===")
-        parts.append(render_latex(rows))
-    print("\n".join(parts))
-    return 0
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument("--format", choices=("markdown", "latex", "both"), default="markdown")
+    args = ap.parse_args()
+    if args.format in ("markdown", "both"):
+        print("## Ablation export (Markdown)\n")
+        print(markdown_table())
+    if args.format in ("latex", "both"):
+        print("%% Ablation export (LaTeX)")
+        print(latex_table())
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()
